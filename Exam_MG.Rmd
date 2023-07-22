@@ -1,0 +1,767 @@
+---
+title: "Exam Data Analysis"
+author: "Michelle Guichardaz"
+date: "24-07-2023"
+output: html_document
+---
+<h2> Introduction </h2> 
+<h3>Non-Small Lung Cancer: general overview and treatment options</h3>
+
+Lung cancer is the second most frequent cancer in the United States and the main cause of cancer death. Previous research found that lung cancer lead to more death than breast cancer, prostate cancer, colorectal cancer, and leukemia combined in men aged 40 and women aged 60. The death rate for lung cancer has recently fallen by 48% in males and 23% in females due to the implementation of screening standards and a decrease in cigarette usage (Alexander et al., 2020). 
+
+Lung cancer can be classified in two subtypes:
+
+- Non-Small Cell Lung Cancer (NSCLC)
+
+- Small Cell Lung Cancer (SCLC)
+
+Among these two, the most common is Non-Small Cell Lung Cancer (NSCLC), accounting for approximately 85% of cases. NSCLC is a broad group of lung malignancies that differ from small cell lung cancer (SCLC) and it can be further divided into adenocarcinoma, large cell carcinoma and squamous cell carcinoma. The most common form, adenocarcinoma, often develops in the outer parts of the lungs. For what concern the other two, while large cell carcinoma is less frequent and is characterized by large cancer cells, squamous cell carcinoma frequently develops in the central airways of the lungs. The causes of NSCLC are multiple, with smoking being the primary risk factor. Exposure to secondhand smoke, environmental pollutants (such as asbestos or radon), genetic factors, and family history of lung cancer can also contribute to the development of NSCLC (Larsen e Minna, 2011). 
+
+The treatment approach for NSCLC depends on various factors including the stage of cancer, histological subtype, molecular alterations, and the patient's health. There are different treatment options that include surgery, radiation therapy, chemotherapy, targeted therapy, and immunotherapy. In recent years, significant progress has been made in the field of targeted therapy for NSCLC. Targeted therapies focus on specific genetic mutations within cancer cells. For instance, specific mutations in the epidermal growth factor receptor (EGFR) gene are commonly found in NSCLC, and targeted EGFR inhibitors, such as osimertinib, have shown promising results in treating patients with EGFR-mutated NSCLC (Soria et al., 2018). 
+
+In fact, the epidermal growth factor receptor (EGFR) signaling pathway plays a crucial role in promoting cancer cell growth and survival. EGFR, a member of the receptor tyrosine kinase (RTK) family, becomes activated upon binding to specific ligands, such as epidermal growth factor (EGF) or transforming growth factor-alpha (TGF-α). This binding induces the activation of several downstream signaling cascades, including PI3K/AKT, RAS/ RAF/mitogen-activated protein kinase (MAPK) and STAT pathways, leading to cell proliferation, survival, angiogenesis, and metastasis. This pathway is often deregulated in different tumors, included NSCLC. This deregulation is mainly due to mutations that involve genes encoding for EGFR and altered expression of the EGFR protein or its ligands (EGF and TGF-α). When focusing on NSCLC, and in particular on the adenocarcinoma subtype, the predominant mutation that occurs is a somatic activating mutation of the EGFR. This mutation confers high sensitivity to the targeted inhibition by EGFR TKIs, such as osimertininb. 
+
+As already said, advancements in precision medicine have revolutionized the treatment landscape for NSCLC. First- and second-generation EGFR tyrosine kinase inhibitors (TKIs), such as erlotinib, gefitinib, and afatinib, have demonstrated higher efficacy and lower toxicity compared to platinum-based chemotherapy as the standard treatment for NSCLC patients with EGFR mutations. However, over time, tumors inevitably develop acquired resistance to these EGFR TKIs, which ultimately limits their long-term effectiveness. The most prevalent mechanism of acquired resistance is the presence of the T790M mutation in exon 20 of the EGFR gene. It is for this reason that in this study the attention is focused on Osimertinib, a third generation EGFR tyrosine kinase inhibitor that irreversibly and selectively targets EGFR TKI – sensitizing and T790M – resistance mutant forms of EGFR. Osimertinib has proven its efficacy both for in vitro and in vivo models (Santarpia et al., 2017).
+
+The mechanism of action of Osimertinib, represented in Figure 1, involves selective and irreversible inhibition of EGFR kinase activity, thereby blocking downstream signaling pathways that, as already explained, promote cancer cell growth and survival. Osimertinib binds to the ATP-binding site of EGFR, preventing ATP from binding and inhibiting the autophosphorylation of EGFR tyrosine residues necessary for activation of downstream signaling cascades. Osimertinib is able to selectively target cancer cells carrying the EGFR-T790M mutation. This mutation occurs in approximately 50% of NSCLC patients who develop resistance to first- or second-generation EGFR TKIs. By inhibiting EGFR-T790M, Osimertinib effectively blocks the activity of the mutant EGFR, inhibiting the signaling pathways associated with cell proliferation, survival, and resistance to apoptosis. Several clinical trials have demonstrated the efficacy of Osimertinib in patients with NSCLC presenting EGFR-T790M mutations. The AURA3 phase III trial compared Osimertinib to platinum-based chemotherapy in patients with EGFR-T790M-positive NSCLC. Osimertinib showed higher survival and response rates compared to chemotherapy, leading to its approval as a standard treatment option (Mok et al., 2017)
+
+![<em>Figure 1</em> EGFR pathway and mechanism of action of Osimertinib](/Users/michelle/Desktop/Exam_Calogero_MG/EGFR pathway.png)
+
+
+However, despite the initial positive response, disease progression and drug resistance often occur in patients treated with Osimertinib. One proposed mechanism for the development of drug resistance to Osimertinib, is the emergence of de novo acquired resistance from a drug tolerant persister (DTP) cell population. DTPs are a small population of cancer cells that enter a drug-tolerant state during treatment. These cells survive the initial treatment but remain in a dormant or slow-proliferating state. Over time, some of these drug-tolerant cells can acquire additional genetic alterations or undergo epigenetic changes that confer resistance to Osimertinib (Blakely et al., 2017).
+
+
+<h2> Data description </h2>
+
+In the present study, the authors aimed to investigate DTP cells in the context of Osimertinib treatment. They employed several profiling techniques, including RNA – seq, ChIP – seq and ATAC-seq, to better understand the characteristics of these cells. For the aim of this project, we will first focus on the analysis of the results obtained from RNA-seq and then, in a second moment, we will concentrate on the ATAC-seq results. 
+
+To perform these experiments, the authors employed different NSCLC EGFR mutant cell lines and for this project we will focus the attention on the data obtained from the NCI-H1975 cell line. 
+Cells were divided into different groups, in this analysis we will compare the data obtained from two different groups: treated and controls. For what concern the treatment, H1975 cells were treated with 500 nM of Osimertinib for 21 days (chronic treatment), instead regarding control cells, they were grown in drug-free media for 21 days and then treated with DMSO for 24h. The experiment was performed using biological triplicates, thus in this project we will deal with a total of 6 samples.  
+
+After the RNA extraction, bulk-RNA sequencing was performed, and the alignment was done using HISAT2 (v2.1.0). Counts were quantified using Salmon (v0.8.2) using Ensembl v79 annotations.
+The RNA – seq estimated counts were provided on the GEO website as a .tsv file and were used for the following analysis.
+
+
+<h2> Results </h2>
+
+```{r}
+setwd("/Users/michelle/Desktop/Exam_Calogero_MG")
+```
+
+
+<h3> Data normalization </h3>
+
+Data normalization is an important step when analyzing bulk RNA-seq data because it helps to remove technical biases and variation introduced during the experimental and sequencing processes. Normalization allows for accurate comparisons and identification of meaningful biological processes between samples. 
+
+There are different methods that can be used to normalize the data, in the course we saw the CPM. The CPM normalization method calculates the expression level of a gene by dividing its raw count (the number of sequencing reads mapped to the gene) by the library size of the corresponding sample. This count is then multiplied by a scaling factor (typically 1 million) to obtain the CPM value. 
+
+First of all, before normalizing the data, I import the file containing the raw counts and I convert it into a data frame called data. 
+
+```{r}
+file_path = "/Users/michelle/Desktop/Exam_Calogero_MG/GSE193258_RNAseq_estimated_counts.tsv"
+data = read.table(file_path, sep = "\t", header = TRUE)
+```
+
+At this point, I create a data frame called samples_1 containing only the name of the genes and the samples needed for the analysis: H1975_DMSO_1, H1975_DMSO_2, H1975_DMSO_3, H1975_osi_DTP_1, H1975_osi_DTP_2 and H1975_osi_DTP_3. 
+
+```{r}
+row_names_genes = data$gene
+samples = data.frame(data[,c(1,32,33,34,41,42,43)], row.names = rownames(data))
+samples_1 = data.frame(data[,c(32,33,34,41,42,43)], row.names = rownames(data))
+rownames(samples_1) = row_names_genes
+head(samples_1)
+```
+
+To perform the normalization in R and convert the raw counts into CPM it is necessary the edgeR package. 
+I convert the data frame samples_1 into a matrix m1 and then I load the library for the normalization. 
+
+```{r}
+m1 = as.matrix(samples_1, rownames.force=NA)
+library(edgeR)
+```
+
+I use the edgeR library to perform the normalization and then I save the results into a .txt file. 
+
+```{r}
+cpm_m1 = edgeR::cpm(m1)
+write.table(cpm_m1, file = "H1975_cells_cpm.txt", sep ="\t", col.names=NA)
+head(cpm_m1)
+```
+
+
+<h3> Data visualization </h3>
+
+After normalizing the data, it is possible to visualize them using Principal Component Analysis (PCA). PCA is a useful technique as it enables the visualization of variance between samples. By plotting the data based on the calculated principal components, it is possible to observe the patterns and clusters in the data, which provides insights into the overall quality of the experiment. By reducing the high-dimensional data to a lower-dimensional space, PCA enables more manageable and interpretable visualizations, while preserving the most important patterns and variation.
+When working with datasets containing multiple conditions, the data can exist in a space with many dimensions, which can be challenging to handle and interpret. To address this, linear space reduction methods like PCA can be employed. By calculating the principal components (PCs), PCA determines the axes of greatest variation in the data. We can then utilize the first two principal components to create a 2D graph that captures the most important patterns and relationships within the data.
+
+In this dataset I have to analyze 6 conditions, thus the PCA will calculates 6 PCs and by using two of them it will be possible to create a 2D plot that explains the variance among the samples. If samples from the same condition or treatment group are grouped together, it indicates that the experimental conditions have a strong influence on gene expression.
+
+I save in the variable samples_2 the CPM normalized counts as a data frame. Then I make the logarithmic transformation of the normalized counts to reduce the influence of extreme values, improve linearity, and enhance interpretability. Then I use the function prcomp to calculate the PCs of the dataframe and then I print the summary.
+
+```{r}
+samples_2 = read.table("H1975_cells_cpm.txt", sep="\t", header = TRUE, row.names=1)
+samples_2 = log2(samples_2+1)
+pca = prcomp(t(samples_2))
+summary(pca)
+```
+
+From the summary it is possible to visualize the standard deviation, the proportion of variance and the cumulative proportion for each PC.
+
+- PC1: It has the highest standard deviation (50.3945) and explains the highest proportion of variance (0.8115) in the data.   This suggests that PC1 captures the most significant patterns and variability in the dataset.
+
+- PC2: It has a lower standard deviation (16.3950) and explains a smaller proportion of variance (0.0859) compared to PC1. However, it still contributes a considerable amount of information to the data.
+
+- PC3, PC4, PC5: These components have progressively lower standard deviations and explain smaller proportions of variance compared to the preceding components. Nonetheless, they still contribute to capturing additional variability in the data.
+
+- PC6: It has a very small standard deviation (1.372e-13), indicating negligible variability. Consequently, its proportion of variance is zero (0.000e+00). This suggests that PC6 does not contribute any meaningful information and can likely be disregarded in further analysis.
+
+Now I calculate the percentage of variation from the standard deviation.
+
+```{r}
+variance_pca = pca$sdev^2
+percentage_var_pca = round(variance_pca/sum(variance_pca)*100, 1)
+```
+
+At this point, in order to confirm that the PC1 and PC2 explains the highest proportion of variance (in particular PC1) and that the other PCs explain smaller proportions of variance it is important to generate a scree plot. To draw this plot it is possible to use the function barplot, at the end there will be the creation of a plot in which the x axis represents all the PCs, while the y axis represents the percentage of variation. This plot is saved in a pdf file called “H1975_cells_screeplot.png”. 
+
+```{r}
+png("H1975_cells_Scree_plot.png", width = 6000, height = 5000, res = 700)
+scree_plot = barplot(percentage_var_pca, main="Scree Plot", xlab="Principal Component", ylab="Percent Variation", ylim = c(0,100))
+dev.off()
+```
+
+![Scree Plot](/Users/michelle/Desktop/Exam_Calogero_MG/H1975_cells_Scree_plot.png)
+
+By looking at the plot we have the confirmation that the majority of variation comes from PC1 followed by PC2. Thus, it is now possible to create a 2D plot that explains the variance among the samples using the PC1 as x axis and the PC2 as y axis. 
+To draw this plot I have to load the library ggplot. Then I create the data frame table_pc1_pc2 that I will use as input for the plot. This data frame contains 6 rows that represent the names of the samples (3 controls and 3 treated) and 3 columns. The first one contains the names of the samples, while the other two called PC1 and PC2 contains the PC values for each sample. 
+The plot is saved in a pdf file called "H1975_cells_pca.png". 
+
+```{r}
+library(ggplot2)
+table_pc1_pc2 = data.frame(Sample=rownames(pca$x),
+                            PC1=pca$x[,1],
+                            PC2=pca$x[,2])
+head(table_pc1_pc2)
+png("H1975_cells_pca.png", width = 6000, height = 5000, res = 700)
+ggplot(data=table_pc1_pc2, aes(x=PC1, y=PC2, color=Sample)) +
+  geom_point() +
+  scale_color_manual(labels = c(rep("treated",3), rep("ctrl",3)), 
+                     values = c(rep("violetred",3), rep("cyan3",3))) +
+  xlab(paste("PC1 - ", percentage_var_pca[1], "%", sep="")) +
+  ylab(paste("PC2 - ", percentage_var_pca[2], "%", sep="")) +
+  ggtitle("PCA H1975")
+dev.off()
+
+
+```
+
+![PCA](/Users/michelle/Desktop/Exam_Calogero_MG/H1975_cells_pca.png)
+
+Each dot of the plot corresponds to a replicate of a specific experimental condition. In this case there are two experimental conditions (H1975 cells treated with DMSO and used as a control and H1975 cells treated with Osimertinib). For each experimental condition there are three replicates. 
+By looking at the plot represented above, we can notice that the two groups are separated mainly on the first principal component (PC1). In fact, the PC1 accounts for the majority of the variation (81.2%). The separation of the two groups (controls and treated), instead, is not so evident on the PC2. In fact, the PC2 accounts only for the 8.6% of variation. 
+
+At this point it would be interesting to understand which genes have an higher impact in the variation of data. To do that we can use the loading scores which indicate the contribution of each original variable to the principal components. They represent the weights assigned to each variable in the linear combination that forms the principal components.
+
+First I call the loading scores rotation of the PC1. 
+
+```{r}
+loading_scores_pc1 = pca$rotation[,1]
+```
+
+In order to have better information on all the genes that have an influence on the positioning of the samples on the right or left of the plot, it is important to use the absolute values. Then, I rank the genes from the top to the bottom and get the names of the top 10 genes with the largest loading score magnitude. The magnitude of the loading score represents the strength of the association between the gene and the principal component. Genes with a larger absolute value indicates a stronger relationship.
+
+```{r}
+gene_scores_pc1 = abs(loading_scores_pc1) 
+ranking_genes_pc1 = sort(gene_scores_pc1, decreasing=TRUE)
+genes_names_pc1_top10 = names(ranking_genes_pc1[1:10])
+genes_names_pc1_top10
+```
+
+At this point, it is also possible to evaluate which genes have positive or negative loading scores, thus contributing to the positioning of the samples in the right or left of the plot respectively. 
+The result is saved in a .txt file called “H1975_cells_top10genes_pc1.txt”. 
+
+```{r}
+genes_pc1_top10 = pca$rotation[genes_names_pc1_top10,1]
+genes_pc1_top10
+write.table(genes_pc1_top10, file = "H1975_cells_top10genes_pc1.txt", sep ="\t", col.names=NA)
+```
+
+Now, it is possible to repeat everything for the PC2 even if it accounts for very low variation among the data. 
+
+```{r}
+loading_scores_pc2 = pca$rotation[,2]
+gene_scores_pc2 = abs(loading_scores_pc2) #why do we have to consider the absolute value?
+ranking_genes_pc2 = sort(gene_scores_pc2, decreasing=TRUE)
+genes_names_pc2_top10 = names(ranking_genes_pc2[1:10])
+genes_names_pc2_top10
+genes_pc2_top10 = pca$rotation[genes_names_pc2_top10,1]
+genes_pc2_top10
+write.table(genes_pc2_top10, file = "H1975_cells_top10genes_pc2.txt", sep ="\t", col.names=NA)
+```
+
+The result is again saved in a .txt file called "H1975_cells_top10genes_pc2.txt". 
+
+
+<h3> Differential expression </h3>
+
+Now that the overall quality of the experiment has been evaluated by performing the PCA, it is possible to proceed by performing the differential expression analysis. Differential expression analysis is a statistical method used to identify genes that show significant changes in expression levels between different conditions or groups. In this case, the aim is to evaluate if the genes change their expression level upon the treatment of H1975 cells with 500 nM osimertinib for 21 days with respect to the controls that are instead treated with DMSO. 
+To perform this analysis, it is necessary the DESeq2 library that do not require normalized counts. 
+
+First of all I call the library and then, since the library DESeq2 require integer numbers to perform the differential expression analysis, I convert all the counts into integers. Then I convert this data frame into a matrix called samples_experiment_matrix.  
+
+```{r}
+library(DESeq2)
+samples_experiment = samples_1
+samples_experiment = as.data.frame(lapply(samples_experiment, as.integer))
+samples_experiment_matrix = as.matrix(samples_experiment)
+```
+
+At this point, I create a data frame called coldata. It contains information about the samples and their corresponding conditions. The sample names are extracted from the samples_experiment data frame. The condition variable is generated as a factor, with "ctrl" assigned to the first three samples and "treat" assigned to the next three samples.
+
+```{r}
+coldata = data.frame(samples = dimnames(samples_experiment)[[2]], condition=factor(c(rep("ctrl",3), rep("treat",3))))
+
+```
+
+Then, I create a DESeqDataSet object named dds from the count data matrix samples_experiment_matrix and the sample information stored in coldata. Then, the DESeq function is applied to the DESeqDataSet object dds. This step performs the differential expression analysis by estimating size factors, dispersion parameters, and fitting negative binomial regression models to identify differentially expressed genes.
+
+```{r}
+dds = DESeqDataSetFromMatrix(countData = samples_experiment_matrix, colData = coldata, design = ~ condition)
+dds = DESeq(dds)
+res = results(dds)
+```
+
+Now I store the results of the differential expression analysis into a data frame called res_diff_expr. I extract the list of total genes and I use the command cbind to add this list to the data frame, in this way, all the differentially expressed (DE) genes are stored in a data frame that can be used for further analysis. 
+
+```{r}
+res_diff_expr = as.data.frame(res)
+gene_name = samples[,"gene", drop = FALSE]
+res_diff_expr = cbind(gene_name, res_diff_expr)
+head(res_diff_expr)
+```
+
+At this point, I can filter the results of the differential expression analysis by applying the following commands. 
+First, I eliminate from the res_diff_expr all the rows where the log2FoldChange has not a valid value (NA), then I perform a further filtering by retaining only the significantly DE genes based on the adjusted p-value (<0.05) and fold change thresholds (>=1). 
+These filtering steps help reduce the number of false positives and focus on genes that have both statistical significance and a substantial effect size.
+
+```{r}
+res_diff_expr = res_diff_expr[!is.na(res_diff_expr$log2FoldChange),]
+res_diff_expr = res_diff_expr[which((res_diff_expr$padj<=0.05) &(abs(res_diff_expr$log2FoldChange)>=1)),]
+head(res_diff_expr)
+dim(res_diff_expr)
+```
+
+By printing the dimension of the data frame containing the results of the differential expression analysis it is possible to see that after the filtering the number of DE genes is 2778. 
+
+
+Now that we know which are the DE genes, we can represent them using a Volcano plot. 
+Volcano plot present as y-axis the logFC and as x-axis the adjusted p-value. The different points that are represented are the DE genes, that are labeled with the correspondent gene symbols/names. 
+To generate a Volcano plot I use the package EnhancedVolcano from Bioconductor and I store the plot in a pdf file called “H1975_volcano_plot.pdf". 
+
+```{r}
+library(EnhancedVolcano)
+EnhancedVolcano(res_diff_expr, x="log2FoldChange", y="padj", lab=res_diff_expr$gene, xlab= "log2FoldChange", ylab="adj p-value")
+ggsave(filename="H1975_volcano_plot.pdf")
+```
+
+By analyzing this plot, we can notice that the different points that are represented are the DE genes, that are labeled with the correspondent gene symbols/names. The adjusted p-value used is 0.05 and it is indicated by the horizontal dashed line. All the genes that are above the line (represented by the red dots) are significantly differentially expressed. 
+Furthermore, we can notice that genes divide into two groups depending on the log2FoldChange values. All the genes that are present in the left side of the graph correspond to negative log2FC values and are downregulated, whereas all the genes that are present in the right side of the plot correspond to positive log2FC values and are upregulated. The more the dots are near to log2FC = 0 the less they are up- and down-regulated. 
+
+Overall, this plot provides a visual representation of the significance and magnitude of gene expression changes, aiding in the interpretation and identification of genes of interest in the differential expression analysis.
+
+
+<h3> Enriched functional features </h3>
+Now that we have identified all the genes that are differentially expressed we can proceed and perform further analysis to understand the biological processes in which these genes are involved. This will also help us to understand the effects of the administered treatment. 
+
+To explore the biological processes associated with DE genes it is possible to perform gene ontology (GO) analysis. In fact, GO is a widely used bioinformatics resource that provides structured and standardized annotations of genes, categorizing them into biological processes, molecular functions, and cellular components. GO analysis helps identify the biological processes that are significantly enriched among the DE genes. By assessing the overrepresentation of specific GO terms, it is possible to gain insights into the biological functions and processes affected by the treatment.
+
+For the aim of this project I use the biological process ontology since it allows to understand the fundamental activities and functions within living systems, providing insights into the dynamic interactions and pathway that characterize the behavior of organisms.
+To do that I use the Gene Ontology (GO) database (http://geneontology.org/), which assigns ontology annotations to gene names, providing information about the function of the corresponding gene products.
+
+First of all, I create a data frame containing only the names of the DE genes, then I save them it into a .txt file called “name_of_genes.txt”.
+
+```{r}
+gene_name = res_diff_expr$gene
+gene_name = as.data.frame(gene_name)
+write.table(gene_name, file = "gene_name.txt", sep = "\t", row.names=FALSE)
+```
+
+After that I select the DE genes positively regulated (logFC>0) using the package dplyr. I save the positive genes into a .txt file called "name_of_pos_genes.txt". 
+
+```{r}
+library(dplyr)
+positive_genes = dplyr::filter(res_diff_expr, log2FoldChange > 0)
+head(positive_genes)
+pos_gene_name = positive_genes$gene
+writeLines(pos_gene_name, "name_of_pos_genes.txt")
+```
+
+Then, by copying and pasting the gene symbols contained in the file .txt on the GO website, using as ontology the biological processes, I performed GO analysis. 
+At this point, I can download the results as an excel file and using the library readxl I load this file and convert it into a data frame. 
+For each dataframe, I extract the columns that correspond to the biological process ontology, enriched fold change values, and raw p-values. These values indicate the level of enrichment and confidence for each biological process. To simplify the analysis, I focus on the top 20 rows of each dataframe.
+
+```{r}
+library(readxl)
+pos_GO_data = read_excel("GOanalysis_pos_data.xltx")
+pos_GO_data = as.data.frame(pos_GO_data)
+pos_GO_data$`raw P-value`=as.numeric(pos_GO_data$`raw P-value`)
+ggplot1_data = data.frame(pos_GO_data$`GO biological process complete`[1:20], pos_GO_data$`fold Enrichment`[1:20],-log(pos_GO_data$`raw P-value`[1:20]))
+colnames(ggplot1_data) = c("biological_process", "fold_enrichment", "log_p_value")
+```
+
+From these data, I create a plot of the top 20 enriched biological processes using the library ggplot2. In particular, I generate a bar plot to visualize the results of a gene ontology (GO) enrichment analysis. The plot represents the fold enrichment values for different biological processes and uses the fill color to indicate the significance level, which is represented by the log-transformed p-values.In general, the darker the bars, the lower the log p-value, meaning that the fold enrichment observed is not by chance, and so that the biological process is really associated to the genes analyzed by Gene Ontology.
+The results are stored in a PDF file called "H1975_GOposdata.pdf”.
+
+```{r}
+library(ggplot2)
+
+ggplot(ggplot1_data) + 
+  geom_bar(stat = "identity", 
+           aes(y=fold_enrichment,x=biological_process, fill=log_p_value)) +
+  labs(fill="log_p_value") +
+  theme(legend.position =c("bottom"),
+        legend.box="horizontal", 
+        legend.text = element_text(size = 9),
+        legend.key.height = unit(0.75, "cm"),
+        legend.key.width = unit(0.75, "cm"),
+        axis.text=element_text(size=7)) +
+  scale_x_discrete() +
+  labs(title="Gene ontology posdata", 
+       y="fold enrichment", 
+       x="Biological process") + 
+  coord_flip()
+ggsave(filename="H1975_GOposdata.pdf")
+```
+
+At this point I perform the same analysis selecting the DE genes that are negatively regulated (logFC < 0). The bar plot is saved in a pdf file called “H1975_GOnegdata.pdf”
+
+```{r}
+library(dplyr)
+negative_genes = dplyr::filter(res_diff_expr, log2FoldChange < 0)
+head(negative_genes)
+neg_gene_name = negative_genes$gene
+writeLines(neg_gene_name, "name_of_neg_genes.txt")
+```
+
+```{r}
+library(readxl)
+neg_GO_data = read_excel("GOanalysis_neg_data.xltx")
+neg_GO_data = as.data.frame(neg_GO_data)
+neg_GO_data$`raw P-value`=as.numeric(neg_GO_data$`raw P-value`)
+ggplot2_data = data.frame(neg_GO_data$`GO biological process complete`[1:20], neg_GO_data$`fold Enrichment`[1:20],-log(neg_GO_data$`raw P-value`[1:20]))
+colnames(ggplot2_data) = c("biological_process", "fold_enrichment", "log_p_value")
+```
+
+```{r}
+ggplot(ggplot2_data) + 
+  geom_bar(stat = "identity", 
+           aes(y=fold_enrichment,x=biological_process, fill=log_p_value)) +
+  labs(fill="log_p_value") +
+  theme(legend.position =c("bottom"),
+        legend.box="horizontal", 
+        legend.text = element_text(size = 9),
+        legend.key.height = unit(0.75, "cm"),
+        legend.key.width = unit(0.75, "cm"),
+        axis.text=element_text(size=7)) +
+  scale_x_discrete() +
+  labs(title="Gene ontology negdata", 
+       y="fold enrichment", 
+       x="Biological process") + 
+  coord_flip()
+ggsave(filename="H1975_GOnegdata.pdf")
+```
+
+By looking at the results of the GO analysis, it is possible to identify the biological processes related to positively and negatively regulated genes in H1975 treated with Osimertinib. 
+
+-	Biological processes associated to positive genes: cell proliferation, in particular mesenchymal cell proliferation, proliferation associated to kidney development and endothelial cell proliferation; heterophilic cell adhesion via plasma membrane adhesion molecules. 
+
+-	Biological processes associated to negative genes: meiotic division, in particular in spindle assembly; regulation of DNA primase activity. 
+
+
+<h2> ATAC – seq analysis </h2>
+
+Once identified the DE genes and the biological processes associated to these genes it is possible to verify if there is a correlation between these DE genes and the genomic regions depicted as active in transcription due to the presence of open chromatin peaks. In particular, the genes that present open chromatin peaks have been identified by performing the ATAC-seq. This analysis have been performed in multiple cell lines and upon different treatments, however, as for the first part of this project, we will focus on the H1975 cell line treated with Osimertinib for 24 days (Osimertinib DTPs). 
+
+<h2> Data description </h2>
+
+The authors treated NSCLC EGFR mutant cell lines with 500 nM of Osimertinib for 24 days. The cell line selected for this project was the H1975. In parallel, some cells were also grown in drug-free media for 21 days and then treated with vehicle DMSO control for 3 days. 
+
+ATAC-sequencing was performed and alignment was done using bwa mem (version 0.7.17). The peak calling, to identify the peaks that correlate with open chromatin regions, was done using MACS2 (v2.2.6). The results are saved into a .narrowPeak file. 
+
+<h2> Results </h2>
+<h3> Overlap analysis </h3>
+
+For each condition (H1975 cells treated with Osimertinib) there are three replicates, thus I perform the overlap analysis between the genomic regions depicted as active and the DE genes three times. In this way it is possible to verify the variability and reproducibility of the analysis. 
+Overlap analysis involves comparing genomic ranges from different datasets or features to determine if they overlap or intersect with each other.
+Furthermore, in order to better understand if a higher expression of genes relates more to an open chromatin conformation with respect to negatively regulated genes, it is important to perform two overlap analysis for each sample. In particular, I have to select the DE genes positively and negatively regulated and then to perform the overlap analysis between these genes and the genomic regions active in transcription due to the presence of open chromatin peaks. 
+
+ 
+
+```{r}
+file_path = "/Users/michelle/Desktop/Exam_Calogero_MG/GSM5777977_X2a_3519AZ_H1975_9291-NF_peaks.narrowPeak"
+peaks = read.delim(file_path, header = FALSE, stringsAsFactors = FALSE)
+head(peaks)
+```
+
+To start, I create a data frame called pos_gene_name where I insert a column containing the names of all the positively regulated genes. I also change the name of this column to “SYMBOL”. 
+
+```{r}
+pos_gene_name = positive_genes$gene
+pos_gene_name = as.data.frame(pos_gene_name)
+colnames(pos_gene_name)[colnames(pos_gene_name) == "pos_gene_name"] = "SYMBOL"
+```
+
+Then, I create a connection to the Ensembl database, using using the "ensembl" dataset for Homo sapiens (human) gene annotations, and I assign the resulting connection object to the variable named "ensembl." Then, I retrieve the gene annotation attributes for each gene symbol from the Ensembl database using the getBM function. Lastly, using the command merge I join the retrieved gene information with the initial data frame (pos_gene_name) based on the "SYMBOL" column from "pos_gene_name" and the "external_gene_name" column from "pos_gene_info."
+I save this data frame in a .txt file called "pos_genes_location.txt". 
+
+```{r}
+library(biomaRt)
+ensembl = useMart("ensembl", dataset = "hsapiens_gene_ensembl")
+pos_gene_info <- getBM(attributes = c("external_gene_name", "chromosome_name", "start_position", "end_position"),
+                   filters = "external_gene_name",
+                   values = pos_gene_name$SYMBOL,
+                   mart = ensembl)
+pos_genes_location = merge(pos_gene_name, pos_gene_info, by.x = "SYMBOL", by.y = "external_gene_name")
+head(pos_genes_location)
+write.table(pos_genes_location, file = "pos_genes_location.txt", sep = "\t", row.names=FALSE)
+
+```
+
+Then, I do the same with for the DE genes negatively regulated. 
+I save the data frame containing the gene locations in a .txt file called "neg_genes_location.txt". 
+
+```{r}
+neg_gene_name = negative_genes$gene 
+neg_gene_name = as.data.frame(neg_gene_name)
+colnames(neg_gene_name)[colnames(neg_gene_name) == "neg_gene_name"] = "SYMBOL"
+
+ensembl = useMart("ensembl", dataset = "hsapiens_gene_ensembl")
+neg_gene_info <- getBM(attributes = c("external_gene_name", "chromosome_name", "start_position", "end_position"),
+                       filters = "external_gene_name",
+                       values = neg_gene_name$SYMBOL,
+                       mart = ensembl)
+neg_genes_location = merge(neg_gene_name, neg_gene_info, by.x = "SYMBOL", by.y = "external_gene_name")
+head(neg_genes_location)
+write.table(neg_genes_location, file = "neg_genes_location.txt", sep = "\t", row.names=FALSE)
+```
+
+Now that I have all the positively and negatively regulated genes associated with their genomic regions in two different data frames, I can start with the overlap analysis. 
+
+<h4> Sample 1 </h4>
+
+To start, I load the file containing all the data related to the open chromatin peaks of the first sample (H1975_Osi_DTP-1). 
+
+```{r}
+file_path = "/Users/michelle/Desktop/Exam_Calogero_MG/GSM5777977_X2a_3519AZ_H1975_9291-NF_peaks.narrowPeak"
+peaks = read.delim(file_path, header = FALSE, stringsAsFactors = FALSE)
+head(peaks)
+```
+
+At this point, starting from the peaks data frame I extract the columns of interest and I associate them with specific names representing their content.
+
+```{r}
+osi1_peaks = subset(peaks, select = c("V1", "V2", "V3", "V4"))
+colnames(osi1_peaks)[colnames(osi1_peaks) == "V1"] = "Chr"
+colnames(osi1_peaks)[colnames(osi1_peaks) == "V2"] = "startPeak"
+colnames(osi1_peaks)[colnames(osi1_peaks) == "V3"] = "endPeak"
+colnames(osi1_peaks)[colnames(osi1_peaks) == "V4"] = "namePeak"
+```
+
+To perform the overlap analysis I use the GenomicRanges package. 
+I create the Granges object gene_regions_pos that represents the genomic regions defined by the start and end positions of the genes in pos_genes_location.
+
+```{r}
+library(GenomicRanges)
+gene_regions_pos = GRanges(
+  seqnames = rep("ArtificialChromosome", length(pos_genes_location$start_position)),
+  ranges = IRanges(pos_genes_location$start_position, pos_genes_location$end_position)
+)
+```
+
+Then, I create another Granges object called open_chromatin_regions_1 that represents the open chromatin peak regions defined by the start and end positions in the osi1_peaks data structure.
+
+```{r}
+
+open_chromatin_regions_1 = GRanges(
+  seqnames = rep("ArtificialChromosome", length(osi1_peaks$startPeak)),
+  ranges = IRanges(osi1_peaks$startPeak, osi1_peaks$endPeak)
+)
+
+```
+
+At this point, I perform the overlap analysis between the positively regulated DE genes and the open chromatin peaks of the first sample using the findOverlaps function of the GenomicRanges package. I then extract the indexes of the overlapping regions using the subjectHits function. Finally, I extract the gene symbols that overlap with open chromatin peaks. 
+
+```{r}
+overlap_pos_1 = findOverlaps(gene_regions_pos, open_chromatin_regions_1)
+pos_overlapping_indices_1 = subjectHits(overlap_pos_1)
+pos_overlapping_name_1 = pos_genes_location$SYMBOL[pos_overlapping_indices_1]
+pos_overlapping_name_1 = as.data.frame(pos_overlapping_name_1)
+```
+
+After that, in order to obtain a more clear and accurate analysis of the resulting gene set, I remove all the “NA” values (that indicates the regions in which none overlap is present) from the pos_overlapping_name_1. 
+
+```{r}
+pos_overlapping_name_1 = subset(pos_overlapping_name_1, pos_overlapping_name_1 != "NA")
+head(pos_overlapping_name_1)
+dim(pos_overlapping_name_1)
+```
+
+By printing the dimension of the pos_overlapping_name_1 it is possible to notice that there are 1576 overlapping regions between the open chromatin peaks and the positively regulated genes of sample 1. 
+
+
+At this point I perform the same analysis to identify the overlap between open chromatin regions and negatively regulated genes. I proceed in the same way as before: I create the Grange objects for the genomic regions and open chromatin peaks, I extract the indexes and the symbols associated to overlapping region and, lastly, I remove all the symbols associated with “NA”. 
+
+```{r}
+gene_regions_neg = GRanges(
+  seqnames = rep("ArtificialChromosome", length(neg_genes_location$start_position)),
+  ranges = IRanges(neg_genes_location$start_position, neg_genes_location$end_position)
+)
+open_chromatin_regions_1 = GRanges(
+  seqnames = rep("ArtificialChromosome", length(osi1_peaks$startPeak)),
+  ranges = IRanges(osi1_peaks$startPeak, osi1_peaks$endPeak)
+)
+overlap_neg_1 = findOverlaps(gene_regions_neg, open_chromatin_regions_1)
+neg_overlapping_indices_1 = subjectHits(overlap_neg_1)
+neg_overlapping_name_1 = neg_genes_location$SYMBOL[neg_overlapping_indices_1]
+neg_overlapping_name_1 = as.data.frame(neg_overlapping_name_1)
+neg_overlapping_name_1 = subset(neg_overlapping_name_1, neg_overlapping_name_1 != "NA")
+head(neg_overlapping_name_1)
+dim(neg_overlapping_name_1)
+```
+
+By printing the dimension of the neg_overlapping_name_1 we can notice that there are 807 overlaps between the negatively regulated DE genes and the open chromatin peaks. This indicates that the number of overlaps is higher for the positively regulated genes. 
+
+
+To better visualize this result I can generate a bar plot in which the x axis represents the category (positively regulated and negatively regulated genes), while the y axis the amount of overlaps for each category. This barplot is saved in a .png file called “barplot_overlap_sample_1.png”. 
+
+
+```{r}
+overlap_positive_1 = 1576 
+overlap_negative_1 = 807
+total_genes_DE = 2778
+prop_overlap_pos_1 = overlap_positive_1 / total_genes_DE
+prop_overlap_neg_1 = overlap_negative_1 / total_genes_DE
+proportions_1 = data.frame(
+  Category = c("Overlapping_POS", "Overlapping_NEG"),
+  Proportion = c(prop_overlap_pos_1, prop_overlap_neg_1)
+)
+png("barplot_overlap_sample_1.png", width = 5000, height = 3000, res = 400)
+barplot(proportions_1$Proportion, names.arg = proportions_1$Category, 
+        xlab = "Category", ylab = "Proportion", main = "Gene Overlap sample 1",
+        col = c("yellow1","coral"), ylim = c(0, max(proportions_1$Proportion) * 1.2))
+dev.off()
+```
+
+![Plot overlap analysis sample 1](/Users/michelle/Desktop/Exam_Calogero_MG/barplot_overlap_sample_1.png)
+
+
+<h4> Sample 2 </h4>
+At this point, I perform the exact same analysis on sample 2 (H1975_Osi_DTP-2). 
+
+```{r}
+file_path = "/Users/michelle/Desktop/Exam_Calogero_MG/GSM5777978_X2b_3519AZ_H1975_9291-NF_peaks.narrowPeak"
+peaks_2 = read.delim(file_path, header = FALSE, stringsAsFactors = FALSE)
+head(peaks_2)
+osi2_peaks = subset(peaks_2, select = c("V1", "V2", "V3", "V4"))
+colnames(osi2_peaks)[colnames(osi2_peaks) == "V1"] = "Chr"
+colnames(osi2_peaks)[colnames(osi2_peaks) == "V2"] = "startPeak"
+colnames(osi2_peaks)[colnames(osi2_peaks) == "V3"] = "endPeak"
+colnames(osi2_peaks)[colnames(osi2_peaks) == "V4"] = "namePeak"
+```
+
+```{r}
+gene_regions_pos = GRanges(
+  seqnames = rep("ArtificialChromosome", length(pos_genes_location$start_position)),
+  ranges = IRanges(pos_genes_location$start_position, pos_genes_location$end_position)
+)
+open_chromatin_regions_2 = GRanges(
+  seqnames = rep("ArtificialChromosome", length(osi2_peaks$startPeak)),
+  ranges = IRanges(osi2_peaks$startPeak, osi2_peaks$endPeak)
+)
+overlap_pos_2 = findOverlaps(gene_regions_pos, open_chromatin_regions_2)
+pos_overlapping_indices_2 = subjectHits(overlap_pos_2)
+pos_overlapping_name_2 = pos_genes_location$SYMBOL[pos_overlapping_indices_2]
+pos_overlapping_name_2 = as.data.frame(pos_overlapping_name_2)
+pos_overlapping_name_2 = subset(pos_overlapping_name_2, pos_overlapping_name_2 != "NA")
+head(pos_overlapping_name_2)
+dim(pos_overlapping_name_2)
+```
+
+In this case, we can appreciate that the number of overlaps between the positively regulated genes and the ATAC peaks using the data obtained from the second replicate is very similar to the one obtained using the first sample. In particular, in this case the number of overlaps is 1519.
+
+Now, I perform the same for the negative genes
+
+```{r}
+library(GenomicRanges)
+gene_regions_neg = GRanges(
+  seqnames = rep("ArtificialChromosome", length(neg_genes_location$start_position)),
+  ranges = IRanges(neg_genes_location$start_position, neg_genes_location$end_position)
+)
+open_chromatin_regions_2 = GRanges(
+  seqnames = rep("ArtificialChromosome", length(osi2_peaks$startPeak)),
+  ranges = IRanges(osi2_peaks$startPeak, osi2_peaks$endPeak)
+)
+overlap_neg_2 = findOverlaps(gene_regions_neg, open_chromatin_regions_2)
+neg_overlapping_indices_2 = subjectHits(overlap_neg_2)
+neg_overlapping_name_2 = neg_genes_location$SYMBOL[neg_overlapping_indices_2]
+neg_overlapping_name_2 = as.data.frame(neg_overlapping_name_2)
+neg_overlapping_name_2 = subset(neg_overlapping_name_2, neg_overlapping_name_2 != "NA")
+head(neg_overlapping_name_2)
+dim(neg_overlapping_name_2)
+```
+
+The same that is true for positively regulated genes is also true for negatively regulated ones. Again, the number of overlaps using the second replicate only slightly differs compared to the one obtained using the first sample. To be more precise, the number of overlaps between negatively regulated genes and open chromatin regions is 786.
+
+At this point I generate the plot.
+
+```{r}
+overlap_positive_2 = 1519 
+overlap_negative_2 = 786
+total_genes_DE = 2778
+prop_overlap_pos_2 = overlap_positive_2 / total_genes_DE
+prop_overlap_neg_2 = overlap_negative_2 / total_genes_DE
+proportions_2 = data.frame(
+  Category = c("Overlapping_POS", "Overlapping_NEG"),
+  Proportion = c(prop_overlap_pos_2, prop_overlap_neg_2)
+)
+png("barplot_overlap_sample_2.png", width = 5000, height = 3000, res = 400)
+barplot(proportions_2$Proportion, names.arg = proportions_2$Category, 
+        xlab = "Category", ylab = "Proportion", main = "Gene Overlap sample 2",
+        col = c("yellowgreen", "aquamarine3"), ylim = c(0, max(proportions_2$Proportion) * 1.2))
+dev.off()
+```
+
+![Plot overlap analysis sample 2](/Users/michelle/Desktop/Exam_Calogero_MG/barplot_overlap_sample_2.png)
+
+
+<h4> Sample 3 </h4>
+
+Lastly, to conclude the analysis and to confirm its reproducibility, I perform the overlap analysis using the third and last replicate (H1975_Osi_DTP-2).
+
+```{r}
+file_path = "/Users/michelle/Desktop/Exam_Calogero_MG/GSM5777979_X2c_3519AZ_H1975_9291-NF_peaks.narrowPeak"
+peaks_3 = read.delim(file_path, header = FALSE, stringsAsFactors = FALSE)
+head(peaks_3)
+osi3_peaks = subset(peaks_3, select = c("V1", "V2", "V3", "V4"))
+colnames(osi3_peaks)[colnames(osi3_peaks) == "V1"] = "Chr"
+colnames(osi3_peaks)[colnames(osi3_peaks) == "V2"] = "startPeak"
+colnames(osi3_peaks)[colnames(osi3_peaks) == "V3"] = "endPeak"
+colnames(osi3_peaks)[colnames(osi3_peaks) == "V4"] = "namePeak"
+```
+
+```{r}
+gene_regions_pos = GRanges(
+  seqnames = rep("ArtificialChromosome", length(pos_genes_location$start_position)),
+  ranges = IRanges(pos_genes_location$start_position, pos_genes_location$end_position)
+)
+open_chromatin_regions_3 = GRanges(
+  seqnames = rep("ArtificialChromosome", length(osi3_peaks$startPeak)),
+  ranges = IRanges(osi3_peaks$startPeak, osi3_peaks$endPeak)
+)
+overlap_pos_3 = findOverlaps(gene_regions_pos, open_chromatin_regions_3)
+pos_overlapping_indices_3 = subjectHits(overlap_pos_3)
+pos_overlapping_name_3 = pos_genes_location$SYMBOL[pos_overlapping_indices_3]
+pos_overlapping_name_3 = as.data.frame(pos_overlapping_name_3)
+pos_overlapping_name_3 = subset(pos_overlapping_name_3, pos_overlapping_name_3!= "NA")
+head(pos_overlapping_name_3)
+dim(pos_overlapping_name_3)
+```
+
+Now I perform the overlap analysis with the negatively regulated genes. 
+
+```{r}
+gene_regions_neg = GRanges(
+  seqnames = rep("ArtificialChromosome", length(neg_genes_location$start_position)),
+  ranges = IRanges(neg_genes_location$start_position, neg_genes_location$end_position)
+)
+open_chromatin_regions_3 = GRanges(
+  seqnames = rep("ArtificialChromosome", length(osi3_peaks$startPeak)),
+  ranges = IRanges(osi3_peaks$startPeak, osi3_peaks$endPeak)
+)
+overlap_neg_3 = findOverlaps(gene_regions_neg, open_chromatin_regions_3)
+neg_overlapping_indices_3 = subjectHits(overlap_neg_3)
+neg_overlapping_name_3 = neg_genes_location$SYMBOL[neg_overlapping_indices_3]
+neg_overlapping_name_3 = as.data.frame(neg_overlapping_name_3)
+neg_overlapping_name_3 = subset(neg_overlapping_name_3, neg_overlapping_name_3 != "NA")
+head(neg_overlapping_name_3)
+dim(neg_overlapping_name_3)
+```
+
+Also in this last case we get almost the same results. In fact, the number of overlaps between positive genes and ATAC peaks of the third replicate is 1500 while the number of overlaps considering the negatively regulated genes is 774. Both these results are in line with the ones obtained by performing the analysis on the first two replicates. 
+
+At this point, it is possible to create the plot. 
+
+```{r}
+overlap_positive_3 = 1500
+overlap_negative_3 = 774
+total_genes_DE = 2778
+prop_overlap_pos_3 = overlap_positive_3 / total_genes_DE
+prop_overlap_neg_3 = overlap_negative_3 / total_genes_DE
+proportions_3 = data.frame(
+  Category = c("Overlapping_POS", "Overlapping_NEG"),
+  Proportion = c(prop_overlap_pos_3, prop_overlap_neg_3)
+)
+png("barplot_overlap_sample_3.png", width = 5000, height = 3000, res = 400)
+barplot(proportions_3$Proportion, names.arg = proportions_3$Category, 
+        xlab = "Category", ylab = "Proportion", main = "Gene Overlap sample 3",
+        col = c("hotpink", "turquoise3"), ylim = c(0, max(proportions_3$Proportion) * 1.2))
+dev.off()
+```
+
+![Plot overlap analysis sample 3](/Users/michelle/Desktop/Exam_Calogero_MG/barplot_overlap_sample_3.png)
+
+
+<h2> Discussion </h2>
+
+In the reported study, researchers treated NSCLC EGFR mutant cell line H1975 with the third generation EGFR tyrosine kinase inhibitor, Osimertinib, to evaluate the features of these cells and identify potential therapeutic opportunities. In fact, as already discussed in the first part of this project, treatment of non-small cell lung cancer (NSCLC) involves the use of different generations of EGFR tyrosine kinase inhibitors (TKIs). First-generation TKIs like erlotinib and gefitinib initially provide clinical benefit but are limited by acquired resistance, often caused by the EGFR T790M mutation. Second-generation TKIs such as afatinib offer broader coverage against EGFR mutations but resistance can still develop through various mechanisms. Osimertinib, a third-generation TKI, specifically targets the EGFR T790M mutation and demonstrates efficacy in resistant NSCLC. However, resistance can arise from drug tolerant persister (DTP) cells, which acquire additional genetic alterations or mutations. 
+
+To evaluate the features of cells that become resistant to Osimertinib treatment, the authors treated H1975 cells with Osimertinib for 21 days. As a control, instead they used H1975 cells treated with DMSO.  Then, bulk RNA-seq was performed. 
+
+To have a better understanding on the features of the cells upon treatment with Osimertinib I first performed a PCA to explore the overall quality of the experiment, then I performed the differential expression analysis starting from the raw counts obtained from the RNA-sequencing. After the identification of the DE genes between the treated and control conditions, I performed a GO analysis to understand which biological processes are enriched in up- and down- regulated genes. 
+In fact, knowing the biological processes associated to up- and down- regulated genes can provide insights into the cellular response to Osimertinib and potential mechanism underlying drug resistance. 
+
+If we analyze the results of the GO analysis, we can notice that the up-regulated genes in H1975 cells treated with Osimertinib are associated with biological processes mainly related to cell proliferation and cell adhesion. The upregulation of genes involved in cell proliferation may indicate that DTP cells try to counteract the inhibitory effects of Osimertinib and maintain their survival and growth. At the same time, upregulation of genes associated with cell adhesion may suggest changes in cell-to-cell interactions, thus promoting the ability of cells to adhere, migrate, or interact with their microenvironment. These changes in cell adhesion may have implications for the invasive potential or metastatic behavior of DTP cells.
+
+In contrast, by analyzing the result of the GO analysis performed with negatively regulated DE genes, it is evident that these genes are mainly associated to biological processes that correlate with meiosis and regulation of primase DNA activity. 
+If genes associated with meiosis are negatively regulated in DTPs, it may indicate a potential disruption or inhibition of meiotic processes. This could suggest that the normal reproductive cell division is affected. For what concern the regulation of DNA primase activity, instead, it is important to say that DNA primase is an enzyme involved in DNA replication, where it synthesizes short RNA primers that serve as starting points for DNA synthesis. If genes involved in the regulation of DNA primase activity are negatively regulated in DTPs, it suggests that these cells acquire the ability to interfere with normal regulation of DNA replication. 
+
+These results suggest that gene expression changes associated with specific biological processes can provide insights into the cellular response to Osimertinib treatment in the context of drug tolerant persister cells. Moreover, knowing the effects on these cells could help the identification of new targets that should be taken into consideration during the development of new drugs to evaluate new therapeutic opportunities. 
+
+Once identified the DE genes upon treatment with Osimertinib and the biological processes associated with them, I moved on with the second part of the project. In particular, I started from the results of an ATAC-sequencing performed using the cell line H1975 upon treatment with Osimertinib. As already said, the peak calling war already performed, thus I performed an overlap analysis between the regions depicted as active in transcription due to the presence of open chromatin peaks and the DE genes (positively and negatively regulated). Since the authors performed the experiments using biological triplicates, I performed the overlap analysis between the regions corresponding to open chromatin peaks and the positively and negatively regulated genes 3 times (one for each sample). 
+
+By looking at the result obtained, it is possible to say that there is a reproducibility between the different conditions in the experiment. In fact, by looking at the result of the overlap analysis, it is appreciable that the number of overlaps detected only slightly differ between the different samples. This is true for the overlap detected between both positively and negatively regulated genes and open chromatin peaks. Furthermore, it is also possible to observe that the number of overlaps detected between the upregulated genes and the chromatin peaks is higher with respect to the ones detected starting from downregulated genes. This suggests that, as expected, higher expression levels of genes correlate with a higher activity of transcription. 
+
+Overall, it is possible to say that the investigation of the different behavior upon the treatment with Osimertinib could help in evaluating and identifying new and potential therapeutic opportunities. 
+
+<h2> References </h2>
+
+•	Alexander M, Kim SY, Cheng H. 2020. Update 2020: Management of Non-Small Cell Lung Cancer. Lung 198:897–907. DOI: 10.1007/s00408-020-00407-5.
+
+•	Blakely CM, Watkins TBK, Wu W, Gini B, Chabon JJ, McCoach CE, McGranahan N, Wilson GA, Birkbak NJ, Olivas VR, Rotow J, Maynard A, Wang V, Gubens MA, Banks KC, Lanman RB, Caulin AF, St John J, Cordero AR, Giannikopoulos P, Simmons AD, Mack PC, Gandara DR, Husain H, Doebele RC, Riess JW, Diehn M, Swanton C, Bivona TG. 2017. Evolution and clinical impact of co-occurring genetic alterations in advanced-stage EGFR-mutant lung cancers. Nature Genetics 49:1693–1704. DOI: 10.1038/ng.3990.
+
+•	Larsen JE, Minna JD. 2011. Molecular biology of lung cancer: clinical implications. Clinics in Chest Medicine 32:703–740. DOI: 10.1016/j.ccm.2011.08.003.
+
+•	Mok TS, Wu Y-L, Ahn M-J, Garassino MC, Kim HR, Ramalingam SS, Shepherd FA, He Y, Akamatsu H, Theelen WSME, Lee CK, Sebastian M, Templeton A, Mann H, Marotti M, Ghiorghiu S, Papadimitrakopoulou VA, AURA3 Investigators. 2017. Osimertinib or Platinum-Pemetrexed in EGFR T790M-Positive Lung Cancer. The New England Journal of Medicine 376:629–640. DOI: 10.1056/NEJMoa1612674.
+
+•	Santarpia M, Liguori A, Karachaliou N, Gonzalez-Cao M, Daffinà MG, D’Aveni A, Marabello G, Altavilla G, Rosell R. 2017. Osimertinib in the treatment of non-small-cell lung cancer: design, development and place in therapy. Lung Cancer (Auckland, N.Z.) 8:109–125. DOI: 10.2147/LCTT.S119644.
+
+•	Soria J-C, Ohe Y, Vansteenkiste J, Reungwetwattana T, Chewaskulyong B, Lee KH, Dechaphunkul A, Imamura F, Nogami N, Kurata T, Okamoto I, Zhou C, Cho BC, Cheng Y, Cho EK, Voon PJ, Planchard D, Su W-C, Gray JE, Lee S-M, Hodge R, Marotti M, Rukazenkov Y, Ramalingam SS, FLAURA Investigators. 2018. Osimertinib in Untreated EGFR-Mutated Advanced Non-Small-Cell Lung Cancer. The New England Journal of Medicine 378:113–125. DOI: 10.1056/NEJMoa1713137.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
